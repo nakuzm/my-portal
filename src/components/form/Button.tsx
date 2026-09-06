@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { forwardRef, type ComponentPropsWithoutRef } from 'react';
-import { cn } from '../lib/cn';
+import { cn } from '../../lib/cn';
 
 const buttonVariants = cva(
   'focus-ring rounded-control inline-flex items-center justify-center gap-3 font-semibold disabled:cursor-not-allowed',

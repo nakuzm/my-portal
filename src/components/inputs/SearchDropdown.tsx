@@ -4,7 +4,7 @@ import { Search } from 'lucide-react';
 import type { ChangeEvent, KeyboardEvent, ReactNode } from 'react';
 import { useId, useRef, useState } from 'react';
 import { cn } from '../../lib/cn';
-import { Input, type InputSize } from '../Input';
+import { Input, type InputSize } from '../form/Input';
 
 const searchOptionVariants = cva(
   'flex w-full cursor-pointer items-center justify-between gap-3 rounded-control text-text-primary outline-none hover:bg-background-secondary-hover',

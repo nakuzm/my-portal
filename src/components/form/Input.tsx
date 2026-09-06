@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from 'class-variance-authority';
 import { forwardRef, type ComponentPropsWithoutRef } from 'react';
-import { cn } from '../lib/cn';
+import { cn } from '../../lib/cn';
 
 const inputVariants = cva(
   'focus-ring w-full rounded-control border bg-background-surface text-text-primary placeholder:text-text-secondary disabled:cursor-not-allowed disabled:bg-background-subtle disabled:text-text-disabled',

@@ -4,7 +4,7 @@ import { useEffect, useId, useRef } from 'react';
 import { useNotifications } from '@hooks/useNotifications';
 import { cn } from '../lib/cn';
 import type { PortalNotification } from '../types';
-import { Button } from './Button';
+import { Button } from './form/Button';
 
 export function NotificationCenter() {
   const {
