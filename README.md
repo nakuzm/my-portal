@@ -17,6 +17,12 @@ The Vite development server will print the local URL, usually `http://localhost:
 npm run build
 ```
 
+## Deploy To GitHub Pages
+
+Pushing to `main` runs `.github/workflows/deploy-pages.yml`, which builds the Vite application and publishes `dist` to GitHub Pages. In the repository's **Settings > Pages**, select **GitHub Actions** as the publishing source.
+
+The deployed project site is available at `https://nakuzm.github.io/my-portal/` after the workflow completes.
+
 ## What Is Included
 
 - Composite dashboard assembled from separate mocked API service calls for customer information, open service tickets, recent orders, and notifications.
