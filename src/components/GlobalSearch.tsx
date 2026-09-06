@@ -27,7 +27,7 @@ export function GlobalSearch() {
   );
 
   return (
-    <section className="rounded-surface border-border-subtle bg-surface grid gap-4 border p-5">
+    <section className="rounded-surface border-border-subtle bg-background-surface grid gap-4 border p-5">
       <div>
         <h2 className="text-heading-2 font-heading-2 leading-snug">
           Global lookup

@@ -10,10 +10,10 @@ export function CardError({
   return (
     <div
       role="alert"
-      className="rounded-control border-error-border bg-error-surface border p-3"
+      className="rounded-control border-border-feedback-error bg-background-feedback-error border p-3"
     >
-      <p className="text-error-text font-semibold">{title}</p>
-      <p className="text-error-text">{message}</p>
+      <p className="text-text-feedback-error font-semibold">{title}</p>
+      <p className="text-text-feedback-error">{message}</p>
     </div>
   );
 }
@@ -30,7 +30,7 @@ export function CardSkeleton({ rows = 3 }: CardSkeletonProps) {
         {Array.from({ length: rows }).map((_, index) => (
           <div
             key={index}
-            className="rounded-control bg-surface-subtle h-[58px] animate-pulse"
+            className="rounded-control bg-background-subtle h-[58px] animate-pulse"
           />
         ))}
       </div>

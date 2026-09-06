@@ -6,7 +6,7 @@ import { useId, useRef, useState } from 'react';
 import { cn } from '../../lib/cn';
 
 const searchInputVariants = cva(
-  'focus-ring w-full rounded-control border border-border-default bg-surface pl-[42px] text-text-primary disabled:cursor-not-allowed disabled:bg-surface-subtle disabled:text-text-disabled',
+  'focus-ring w-full rounded-control border border-border-default bg-background-surface pl-[42px] text-text-primary disabled:cursor-not-allowed disabled:bg-background-subtle disabled:text-text-disabled',
   {
     variants: {
       size: {
@@ -21,7 +21,7 @@ const searchInputVariants = cva(
 );
 
 const searchOptionVariants = cva(
-  'flex w-full cursor-pointer items-center justify-between gap-3 rounded-control text-text-primary outline-none hover:bg-secondary-hover',
+  'flex w-full cursor-pointer items-center justify-between gap-3 rounded-control text-text-primary outline-none hover:bg-background-secondary-hover',
   {
     variants: {
       size: {
@@ -29,7 +29,7 @@ const searchOptionVariants = cva(
         md: 'min-h-[42px] px-4 py-3 text-sm',
       },
       active: {
-        true: 'bg-secondary',
+        true: 'bg-background-secondary',
       },
     },
     defaultVariants: {
@@ -161,7 +161,7 @@ export function SearchDropdown<T = string>({
             <div className="relative">
               <Search
                 aria-hidden="true"
-                className="text-text-secondary pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2"
+                className="text-icon-secondary pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2"
               />
               <input
                 ref={inputRef}
@@ -201,7 +201,7 @@ export function SearchDropdown<T = string>({
           onMouseDown={(event) => event.preventDefault()}
           style={{ minWidth: 'var(--radix-popover-trigger-width)' }}
           className={cn(
-            'rounded-surface border-border-subtle bg-surface z-30 max-h-72 overflow-auto border p-2 shadow-lg outline-none',
+            'rounded-surface border-border-subtle bg-background-surface z-30 max-h-72 overflow-auto border p-2 shadow-lg outline-none',
             dropdownClassName,
           )}
         >

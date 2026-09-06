@@ -40,10 +40,10 @@ export function AccountSummary({
       {isLoading && (
         <>
           <div className="border-border-subtle grid justify-items-center gap-3 border-b pb-5 text-center">
-            <div className="bg-surface-subtle size-16 animate-pulse rounded-full" />
+            <div className="bg-background-subtle size-16 animate-pulse rounded-full" />
             <div className="grid w-full justify-items-center gap-3">
-              <div className="rounded-control bg-surface-subtle h-3 w-32 animate-pulse" />
-              <div className="rounded-control bg-surface-subtle h-5 w-56 max-w-full animate-pulse" />
+              <div className="rounded-control bg-background-subtle h-3 w-32 animate-pulse" />
+              <div className="rounded-control bg-background-subtle h-5 w-56 max-w-full animate-pulse" />
             </div>
           </div>
           <CardSkeleton rows={5} />
@@ -57,7 +57,7 @@ export function AccountSummary({
       {customer && !isLoading && !error && (
         <>
           <div className="border-border-subtle grid justify-items-center gap-3 border-b pb-5 text-center">
-            <div className="bg-info-surface text-info-text grid size-16 place-items-center rounded-full text-xl font-bold">
+            <div className="bg-background-feedback-info text-text-feedback-info grid size-16 place-items-center rounded-full text-xl font-bold">
               {getInitials(customer.name)}
             </div>
             <div>
@@ -68,7 +68,7 @@ export function AccountSummary({
                 {customer.name}
               </h2>
             </div>
-            <span className="rounded-pill bg-success-surface text-success-text px-3 py-2 text-xs font-bold">
+            <span className="rounded-pill bg-background-feedback-success text-text-feedback-success px-3 py-2 text-xs font-bold">
               {customer.tier} account
             </span>
           </div>
@@ -81,10 +81,13 @@ export function AccountSummary({
               {accountRows.map(([key, label, Icon]) => (
                 <div
                   key={key}
-                  className="rounded-control border-border-subtle bg-surface-raised grid gap-2 border p-3"
+                  className="rounded-control border-border-subtle bg-background-raised grid gap-2 border p-3"
                 >
                   <dt className="text-label-small font-label-small text-text-secondary inline-flex items-center gap-3 uppercase">
-                    <Icon aria-hidden="true" className="size-4" />
+                    <Icon
+                      aria-hidden="true"
+                      className="text-icon-secondary size-4"
+                    />
                     {label}
                   </dt>
                   <dd className="m-0 font-semibold">{customer[key]}</dd>

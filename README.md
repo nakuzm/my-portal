@@ -46,7 +46,7 @@ The deployed project site is available at `https://nakuzm.github.io/my-portal/` 
 
 The styling in `src/index.css` adapts the provided token package into CSS custom properties. Primitive values such as gray, blue, red, green, orange, spacing, radius, and font tokens are exposed first, then consumed through semantic variables such as `--background-surface`, `--text-primary`, `--border-subtle`, and `--background-primary`.
 
-Tailwind v4 theme aliases expose semantic token utilities such as `bg-surface`, `border-border-subtle`, `text-text-primary`, `bg-status-pending`, and `rounded-control`. This keeps components free from hard-coded brand colors while allowing a theme update to flow through the UI.
+Tailwind v4 theme aliases expose semantic token utilities such as `bg-background-surface`, `border-border-subtle`, `text-text-primary`, `bg-status-pending`, and `rounded-control`. The aliases preserve the provided semantic token names while keeping components free from hard-coded brand colors and allowing a theme update to flow through the UI.
 
 The supplied spacing scale is mapped directly to Tailwind's numbered spacing utilities: `gap-3`, `p-5`, and `px-6` resolve to `--space-3`, `--space-5`, and `--space-6`. Fixed component dimensions that do not exist in the spacing scale, such as the 42px search control height, intentionally use explicit utilities such as `min-h-[42px]`.
 

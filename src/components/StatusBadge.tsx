@@ -21,16 +21,16 @@ export function StatusBadge({ children, tone }: StatusBadgeProps) {
 
 function getToneClass(tone: StatusBadgeProps['tone']) {
   if (tone === 'critical' || tone === 'high') {
-    return 'bg-error-surface text-error-text';
+    return 'bg-background-feedback-error text-text-feedback-error';
   }
 
   if (tone === 'medium') {
-    return 'bg-warning-surface text-warning-text';
+    return 'bg-background-feedback-warning text-text-feedback-warning';
   }
 
   if (tone === 'low' || tone === 'success') {
-    return 'bg-success-surface text-success-text';
+    return 'bg-background-feedback-success text-text-feedback-success';
   }
 
-  return 'bg-info-surface text-info-text';
+  return 'bg-background-feedback-info text-text-feedback-info';
 }

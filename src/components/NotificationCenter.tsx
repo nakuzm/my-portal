@@ -68,13 +68,13 @@ export function NotificationCenter() {
       <Popover.Trigger asChild>
         <button
           type="button"
-          className="focus-ring rounded-control border-border-default bg-secondary text-primary hover:bg-secondary-hover disabled:bg-secondary-disabled disabled:text-text-disabled relative grid size-[42px] place-items-center border disabled:cursor-not-allowed"
+          className="focus-ring rounded-control border-border-default bg-background-secondary text-primary hover:bg-background-secondary-hover disabled:bg-background-secondary-disabled disabled:text-text-disabled relative grid size-[42px] place-items-center border disabled:cursor-not-allowed"
           aria-label={`Notifications, ${unreadCount} unread`}
         >
-          <Bell aria-hidden="true" className="size-[20px]" />
+          <Bell aria-hidden="true" className="text-icon-primary size-[20px]" />
           {unreadCount > 0 && (
             <span
-              className="border-surface bg-counter-background text-counter-text absolute -top-3 -right-3 grid h-[22px] min-w-[22px] place-items-center rounded-full border-2 px-2 text-xs font-bold"
+              className="border-background-surface bg-counter-background text-counter-text absolute -top-3 -right-3 grid h-[22px] min-w-[22px] place-items-center rounded-full border-2 px-2 text-xs font-bold"
               aria-hidden="true"
             >
               {unreadCount}
@@ -94,7 +94,7 @@ export function NotificationCenter() {
           aria-labelledby={headingId}
           aria-describedby={descriptionId}
           ref={panelRef}
-          className="rounded-surface border-border-subtle bg-surface z-30 w-[min(420px,calc(100vw-32px))] border p-4 shadow-[0_18px_42px_rgba(17,24,39,0.14)]"
+          className="rounded-surface border-border-subtle bg-background-surface z-30 w-[min(420px,calc(100vw-32px))] border p-4 shadow-[0_18px_42px_rgba(17,24,39,0.14)]"
         >
           <div className="mb-4 flex items-start justify-between gap-4">
             <div>
@@ -129,9 +129,12 @@ export function NotificationCenter() {
                 <button
                   type="button"
                   aria-label="Close notifications"
-                  className="focus-ring rounded-control border-border-subtle bg-secondary text-text-secondary hover:bg-secondary-hover disabled:bg-secondary-disabled disabled:text-text-disabled grid size-8 place-items-center border disabled:cursor-not-allowed"
+                  className="focus-ring rounded-control border-border-subtle bg-background-secondary text-text-secondary hover:bg-background-secondary-hover disabled:bg-background-secondary-disabled disabled:text-text-disabled grid size-8 place-items-center border disabled:cursor-not-allowed"
                 >
-                  <X aria-hidden="true" className="size-4" />
+                  <X
+                    aria-hidden="true"
+                    className="text-icon-secondary size-4"
+                  />
                 </button>
               </Popover.Close>
             </div>
@@ -140,7 +143,7 @@ export function NotificationCenter() {
           {error && (
             <p
               role="alert"
-              className="rounded-control border-error-border bg-error-surface text-error-text mb-4 border p-3 text-sm"
+              className="rounded-control border-border-feedback-error bg-background-feedback-error text-text-feedback-error mb-4 border p-3 text-sm"
             >
               {error}
             </p>
@@ -155,7 +158,7 @@ export function NotificationCenter() {
             className="grid gap-3 p-0"
           >
             {visibleNotifications.length === 0 && (
-              <li className="rounded-control border-border-subtle bg-surface text-text-secondary border p-3">
+              <li className="rounded-control border-border-subtle bg-background-surface text-text-secondary border p-3">
                 No notifications to show.
               </li>
             )}
@@ -195,8 +198,8 @@ function NotificationItem({
       className={cn(
         'rounded-control min-h-[72px] border p-3',
         notification.read
-          ? 'border-border-subtle bg-notification-read'
-          : 'border-info-border bg-notification-unread',
+          ? 'border-border-subtle bg-background-notification-read'
+          : 'border-border-feedback-info bg-background-notification-unread',
       )}
     >
       <div className="min-w-0">
@@ -218,7 +221,7 @@ function NotificationItem({
                   ? `Marking ${notification.title} as read`
                   : `Mark ${notification.title} as read`
               }
-              className="focus-ring rounded-control bg-primary text-text-inverse hover:bg-primary-hover disabled:bg-primary-disabled disabled:text-text-disabled inline-flex min-h-[34px] items-center gap-3 px-3 font-semibold disabled:cursor-wait"
+              className="focus-ring rounded-control bg-background-primary text-text-inverse hover:bg-background-primary-hover disabled:bg-background-primary-disabled disabled:text-text-disabled inline-flex min-h-[34px] items-center gap-3 px-3 font-semibold disabled:cursor-wait"
               onClick={(event) =>
                 onMarkRead(notification.id, event.currentTarget)
               }
@@ -226,7 +229,7 @@ function NotificationItem({
               {isMarkingRead && (
                 <LoaderCircle
                   aria-hidden="true"
-                  className="size-4 animate-spin"
+                  className="text-icon-inverse size-4 animate-spin"
                 />
               )}
               {isMarkingRead ? 'Marking read' : 'Mark read'}

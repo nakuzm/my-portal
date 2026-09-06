@@ -1,17 +1,21 @@
 @import 'tailwindcss';
 
 @theme inline {
-  --color-surface: var(--background-surface);
-  --color-surface-subtle: var(--background-subtle);
-  --color-surface-raised: var(--background-subtle);
-  --color-primary: var(--background-primary);
-  --color-primary-hover: var(--background-primary-hover);
-  --color-primary-disabled: var(--background-primary-disabled);
-  --color-secondary: var(--background-secondary);
-  --color-secondary-hover: var(--background-secondary-hover);
-  --color-secondary-disabled: var(--background-secondary-disabled);
-  --color-notification-unread: var(--background-notification-unread);
-  --color-notification-read: var(--background-notification-read);
+  --color-background-surface: var(--background-surface);
+  --color-background-subtle: var(--background-subtle);
+  --color-background-raised: var(--background-subtle);
+  --color-background-primary: var(--background-primary);
+  --color-background-primary-hover: var(--background-primary-hover);
+  --color-background-primary-disabled: var(--background-primary-disabled);
+  --color-background-secondary: var(--background-secondary);
+  --color-background-secondary-hover: var(--background-secondary-hover);
+  --color-background-secondary-disabled: var(--background-secondary-disabled);
+  --color-background-notification-unread: var(--background-notification-unread);
+  --color-background-notification-read: var(--background-notification-read);
+  --color-background-feedback-error: var(--background-feedback-error);
+  --color-background-feedback-warning: var(--background-feedback-warning);
+  --color-background-feedback-success: var(--background-feedback-success);
+  --color-background-feedback-info: var(--background-feedback-info);
   --color-counter-background: var(--counter-background);
   --color-counter-text: var(--counter-text);
   --color-status-active: var(--status-active);
@@ -23,22 +27,24 @@
   --color-text-secondary: var(--text-secondary);
   --color-text-inverse: var(--text-inverse);
   --color-text-disabled: var(--text-disabled);
-  --color-error-surface: var(--background-feedback-error);
-  --color-error-text: var(--text-feedback-error);
-  --color-error-border: var(--border-feedback-error);
-  --color-warning-surface: var(--background-feedback-warning);
-  --color-warning-text: var(--text-feedback-warning);
-  --color-warning-border: var(--border-feedback-warning);
-  --color-success-surface: var(--background-feedback-success);
-  --color-success-text: var(--text-feedback-success);
-  --color-success-border: var(--border-feedback-success);
-  --color-info-surface: var(--background-feedback-info);
-  --color-info-text: var(--text-feedback-info);
-  --color-info-border: var(--border-feedback-info);
+  --color-text-feedback-error: var(--text-feedback-error);
+  --color-text-feedback-warning: var(--text-feedback-warning);
+  --color-text-feedback-success: var(--text-feedback-success);
+  --color-text-feedback-info: var(--text-feedback-info);
+  --color-border-feedback-error: var(--border-feedback-error);
+  --color-border-feedback-warning: var(--border-feedback-warning);
+  --color-border-feedback-success: var(--border-feedback-success);
+  --color-border-feedback-info: var(--border-feedback-info);
   --color-border-subtle: var(--border-subtle);
   --color-border-default: var(--border-default);
   --color-icon-primary: var(--icon-primary);
   --color-icon-secondary: var(--icon-secondary);
+  --color-icon-inverse: var(--icon-inverse);
+  --color-icon-disabled: var(--icon-disabled);
+  --color-icon-feedback-error: var(--icon-feedback-error);
+  --color-icon-feedback-warning: var(--icon-feedback-warning);
+  --color-icon-feedback-success: var(--icon-feedback-success);
+  --color-icon-feedback-info: var(--icon-feedback-info);
   --color-focus-ring: var(--focus-ring-color);
   --text-xs: var(--font-size-xs);
   --text-sm: var(--font-size-sm);
@@ -72,7 +78,7 @@
 }
 
 @utility dashboard-list-item {
-  @apply rounded-control border-border-subtle bg-surface flex items-center justify-between gap-4 border p-3 max-sm:flex-col max-sm:items-start;
+  @apply rounded-control border-border-subtle bg-background-surface flex items-center justify-between gap-4 border p-3 max-sm:flex-col max-sm:items-start;
 }
 
 @utility dashboard-list-item-title {
