@@ -4,6 +4,7 @@ import { useEffect, useId, useRef } from 'react';
 import { useNotifications } from '@hooks/useNotifications';
 import { cn } from '../lib/cn';
 import type { PortalNotification } from '../types';
+import { Button } from './Button';
 
 export function NotificationCenter() {
   const {
@@ -66,9 +67,10 @@ export function NotificationCenter() {
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <button
-          type="button"
-          className="focus-ring rounded-control border-border-default bg-background-secondary text-primary hover:bg-background-secondary-hover disabled:bg-background-secondary-disabled disabled:text-text-disabled relative grid size-[42px] place-items-center border disabled:cursor-not-allowed"
+        <Button
+          variant="secondary"
+          size="icon"
+          className="border-border-default relative"
           aria-label={`Notifications, ${unreadCount} unread`}
         >
           <Bell
@@ -83,7 +85,7 @@ export function NotificationCenter() {
               {unreadCount}
             </span>
           )}
-        </button>
+        </Button>
       </Popover.Trigger>
       <span className="sr-only" role="status" aria-atomic="true">
         {unreadCount} unread notifications
@@ -129,16 +131,16 @@ export function NotificationCenter() {
                 <span>Unread only</span>
               </label>
               <Popover.Close asChild>
-                <button
-                  type="button"
+                <Button
+                  variant="secondary"
+                  size="icon-sm"
                   aria-label="Close notifications"
-                  className="focus-ring rounded-control border-border-subtle bg-background-secondary text-text-secondary hover:bg-background-secondary-hover disabled:bg-background-secondary-disabled disabled:text-text-disabled grid size-8 place-items-center border disabled:cursor-not-allowed"
                 >
                   <X
                     aria-hidden="true"
                     className="text-icon-secondary size-4"
                   />
-                </button>
+                </Button>
               </Popover.Close>
             </div>
           </div>
@@ -215,8 +217,8 @@ function NotificationItem({
         <p>{notification.detail}</p>
         {canMarkRead && (
           <div className="mt-3">
-            <button
-              type="button"
+            <Button
+              size="sm"
               disabled={isMarkingRead}
               aria-busy={isMarkingRead}
               aria-label={
@@ -224,7 +226,7 @@ function NotificationItem({
                   ? `Marking ${notification.title} as read`
                   : `Mark ${notification.title} as read`
               }
-              className="focus-ring rounded-control bg-background-primary text-text-inverse hover:bg-background-primary-hover disabled:bg-background-primary-disabled disabled:text-text-disabled inline-flex min-h-[34px] items-center gap-3 px-3 font-semibold disabled:cursor-wait"
+              className="disabled:cursor-wait"
               onClick={(event) =>
                 onMarkRead(notification.id, event.currentTarget)
               }
@@ -236,7 +238,7 @@ function NotificationItem({
                 />
               )}
               {isMarkingRead ? 'Marking read' : 'Mark read'}
-            </button>
+            </Button>
           </div>
         )}
       </div>

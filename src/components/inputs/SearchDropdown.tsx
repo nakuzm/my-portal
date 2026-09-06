@@ -1,24 +1,10 @@
 import * as Popover from '@radix-ui/react-popover';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 import { Search } from 'lucide-react';
 import type { ChangeEvent, KeyboardEvent, ReactNode } from 'react';
 import { useId, useRef, useState } from 'react';
 import { cn } from '../../lib/cn';
-
-const searchInputVariants = cva(
-  'focus-ring w-full rounded-control border border-border-default bg-background-surface pl-[42px] text-text-primary disabled:cursor-not-allowed disabled:bg-background-subtle disabled:text-text-disabled',
-  {
-    variants: {
-      size: {
-        sm: 'min-h-9 py-3 pr-3 text-sm',
-        md: 'min-h-[42px] py-3 pr-4 text-sm',
-      },
-    },
-    defaultVariants: {
-      size: 'md',
-    },
-  },
-);
+import { Input, type InputSize } from '../Input';
 
 const searchOptionVariants = cva(
   'flex w-full cursor-pointer items-center justify-between gap-3 rounded-control text-text-primary outline-none hover:bg-background-secondary-hover',
@@ -39,9 +25,7 @@ const searchOptionVariants = cva(
   },
 );
 
-type SearchDropdownSize = NonNullable<
-  VariantProps<typeof searchInputVariants>['size']
->;
+type SearchDropdownSize = InputSize;
 
 export type SearchDropdownOption<T = string> = {
   key?: string;
@@ -163,7 +147,7 @@ export function SearchDropdown<T = string>({
                 aria-hidden="true"
                 className="text-icon-secondary pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2"
               />
-              <input
+              <Input
                 ref={inputRef}
                 id={inputId}
                 name={name}
@@ -178,10 +162,8 @@ export function SearchDropdown<T = string>({
                 disabled={disabled}
                 placeholder={placeholder}
                 autoFocus={autoFocus}
-                className={cn(
-                  searchInputVariants({ size: searchDropdownSize }),
-                  inputClassName,
-                )}
+                className={cn('pl-[42px]', inputClassName)}
+                size={searchDropdownSize}
                 onChange={handleChange}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
