@@ -161,7 +161,7 @@ export function SearchDropdown<T = string>({
             <div className="relative">
               <Search
                 aria-hidden="true"
-                className="text-text-secondary pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2"
+                className="text-text-secondary pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2"
               />
               <input
                 ref={inputRef}
