@@ -71,7 +71,10 @@ export function NotificationCenter() {
           className="focus-ring rounded-control border-border-default bg-background-secondary text-primary hover:bg-background-secondary-hover disabled:bg-background-secondary-disabled disabled:text-text-disabled relative grid size-[42px] place-items-center border disabled:cursor-not-allowed"
           aria-label={`Notifications, ${unreadCount} unread`}
         >
-          <Bell aria-hidden="true" className="text-icon-primary size-[20px]" />
+          <Bell
+            aria-hidden="true"
+            className="text-background-primary size-[20px]"
+          />
           {unreadCount > 0 && (
             <span
               className="border-background-surface bg-counter-background text-counter-text absolute -top-3 -right-3 grid h-[22px] min-w-[22px] place-items-center rounded-full border-2 px-2 text-xs font-bold"
