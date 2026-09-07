@@ -6,7 +6,14 @@ type AsyncDataState<TData> = {
   isLoading: boolean;
 };
 
-export function useAsyncData<TData>(loadData: () => Promise<TData>) {
+type UseAsyncDataOptions = {
+  refetchOnWindowFocus?: boolean;
+};
+
+export function useAsyncData<TData>(
+  loadData: () => Promise<TData>,
+  { refetchOnWindowFocus = false }: UseAsyncDataOptions = {},
+) {
   const [state, setState] = useState<AsyncDataState<TData>>({
     data: null,
     error: null,
@@ -42,10 +49,19 @@ export function useAsyncData<TData>(loadData: () => Promise<TData>) {
 
     load();
 
+    if (!refetchOnWindowFocus) {
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    window.addEventListener('focus', load);
+
     return () => {
       isMounted = false;
+      window.removeEventListener('focus', load);
     };
-  }, [loadData]);
+  }, [loadData, refetchOnWindowFocus]);
 
   return state;
 }
