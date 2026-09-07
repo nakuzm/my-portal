@@ -40,6 +40,7 @@ export function useNotificationState() {
   const [pendingReadIds, setPendingReadIds] = useState<Set<string>>(
     () => new Set(),
   );
+  const [markReadError, setMarkReadError] = useState<string | null>(null);
 
   const {
     data: notifications = [],
@@ -71,10 +72,11 @@ export function useNotificationState() {
       setPendingReadIds((currentIds) =>
         new Set(currentIds).add(notificationId),
       );
+      setMarkReadError(null);
 
-      const previousNotifications = queryClient.getQueryData<
-        PortalNotification[]
-      >(notificationsQueryKey);
+      const previousNotification = queryClient
+        .getQueryData<PortalNotification[]>(notificationsQueryKey)
+        ?.find((notification) => notification.id === notificationId);
 
       queryClient.setQueryData<PortalNotification[]>(
         notificationsQueryKey,
@@ -84,15 +86,21 @@ export function useNotificationState() {
             : current,
       );
 
-      return { previousNotifications };
+      return { previousRead: previousNotification?.read ?? false };
     },
-    onError: (_error, _notificationId, context) => {
-      if (context?.previousNotifications) {
-        queryClient.setQueryData(
-          notificationsQueryKey,
-          context.previousNotifications,
-        );
-      }
+    onError: (_error, notificationId, context) => {
+      queryClient.setQueryData<PortalNotification[]>(
+        notificationsQueryKey,
+        (current) =>
+          current
+            ? setNotificationReadState(
+                current,
+                notificationId,
+                context?.previousRead ?? false,
+              )
+            : current,
+      );
+      setMarkReadError('Notification could not be marked as read.');
     },
     onSettled: (_data, _error, notificationId) => {
       setPendingReadIds((currentIds) => {
@@ -103,11 +111,9 @@ export function useNotificationState() {
     },
   });
 
-  const error = markReadMutation.error
-    ? 'Notification could not be marked as read.'
-    : fetchError
-      ? 'Notifications could not be refreshed.'
-      : null;
+  const error =
+    markReadError ??
+    (fetchError ? 'Notifications could not be refreshed.' : null);
 
   return {
     notifications,
