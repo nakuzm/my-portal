@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getNotifications, markNotificationRead } from '../lib/mockPortalApi';
 import type { PortalNotification } from '../types';
 
 const NOTIFICATION_REFRESH_INTERVAL_MS = 15_000;
+const notificationsQueryKey = ['notifications'];
 
 function mergeNotifications(
   currentNotifications: PortalNotification[],
@@ -33,91 +35,88 @@ function setNotificationReadState(
 }
 
 export function useNotificationState() {
-  const [notifications, setNotifications] = useState<PortalNotification[]>([]);
+  const queryClient = useQueryClient();
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [pendingReadIds, setPendingReadIds] = useState<Set<string>>(
     () => new Set(),
   );
 
-  useEffect(() => {
-    let isMounted = true;
+  const {
+    data: notifications = [],
+    isFetching,
+    error: fetchError,
+  } = useQuery({
+    queryKey: notificationsQueryKey,
+    queryFn: async () => {
+      const nextNotifications = await getNotifications();
+      const previousNotifications =
+        queryClient.getQueryData<PortalNotification[]>(
+          notificationsQueryKey,
+        ) ?? [];
 
-    async function refreshNotifications() {
-      if (isMounted) {
-        setIsLoading(true);
-      }
-
-      try {
-        const nextNotifications = await getNotifications();
-
-        if (isMounted) {
-          setNotifications((currentNotifications) =>
-            mergeNotifications(currentNotifications, nextNotifications),
-          );
-          setError(null);
-        }
-      } catch {
-        if (isMounted) {
-          setError('Notifications could not be refreshed.');
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    }
-
-    refreshNotifications();
-    const intervalId = window.setInterval(
-      refreshNotifications,
-      NOTIFICATION_REFRESH_INTERVAL_MS,
-    );
-
-    return () => {
-      isMounted = false;
-      window.clearInterval(intervalId);
-    };
-  }, []);
+      return mergeNotifications(previousNotifications, nextNotifications);
+    },
+    refetchInterval: NOTIFICATION_REFRESH_INTERVAL_MS,
+  });
 
   const unreadCount = useMemo(
     () => notifications.filter((notification) => !notification.read).length,
     [notifications],
   );
 
-  const handleMarkNotificationRead = async (notificationId: string) => {
-    setError(null);
-    setPendingReadIds((currentIds) => new Set(currentIds).add(notificationId));
-
-    setNotifications((currentNotifications) =>
-      setNotificationReadState(currentNotifications, notificationId, true),
-    );
-
-    try {
-      await markNotificationRead(notificationId);
-    } catch {
-      setNotifications((currentNotifications) =>
-        setNotificationReadState(currentNotifications, notificationId, false),
+  const markReadMutation = useMutation({
+    mutationFn: markNotificationRead,
+    onMutate: async (notificationId) => {
+      await queryClient.cancelQueries({ queryKey: notificationsQueryKey });
+      setPendingReadIds((currentIds) =>
+        new Set(currentIds).add(notificationId),
       );
-      setError('Notification could not be marked as read.');
-    } finally {
+
+      const previousNotifications = queryClient.getQueryData<
+        PortalNotification[]
+      >(notificationsQueryKey);
+
+      queryClient.setQueryData<PortalNotification[]>(
+        notificationsQueryKey,
+        (current) =>
+          current
+            ? setNotificationReadState(current, notificationId, true)
+            : current,
+      );
+
+      return { previousNotifications };
+    },
+    onError: (_error, _notificationId, context) => {
+      if (context?.previousNotifications) {
+        queryClient.setQueryData(
+          notificationsQueryKey,
+          context.previousNotifications,
+        );
+      }
+    },
+    onSettled: (_data, _error, notificationId) => {
       setPendingReadIds((currentIds) => {
         const nextIds = new Set(currentIds);
         nextIds.delete(notificationId);
         return nextIds;
       });
-    }
-  };
+    },
+  });
+
+  const error = markReadMutation.error
+    ? 'Notification could not be marked as read.'
+    : fetchError
+      ? 'Notifications could not be refreshed.'
+      : null;
 
   return {
     notifications,
     showUnreadOnly,
     unreadCount,
-    isLoading,
+    isLoading: isFetching,
     error,
     pendingReadIds,
     setShowUnreadOnly,
-    markNotificationRead: handleMarkNotificationRead,
+    markNotificationRead: markReadMutation.mutate,
   };
 }
