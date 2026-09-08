@@ -1,7 +1,12 @@
 import * as Popover from '@radix-ui/react-popover';
 import { Bell, LoaderCircle, X } from 'lucide-react';
-import { useEffect, useId, useRef } from 'react';
-import { useNotifications } from '@hooks/useNotifications';
+import { useId, useRef } from 'react';
+import type { RefObject } from 'react';
+import {
+  useMarkNotificationRead,
+  useNotifications,
+  usePendingReadIds,
+} from '@hooks/useNotifications';
 import { cn } from '../lib/cn';
 import type { PortalNotification } from '../types';
 import { Button } from './form/Button';
@@ -13,56 +18,20 @@ export function NotificationCenter() {
     unreadCount,
     isLoading,
     error,
-    pendingReadIds,
     setShowUnreadOnly,
-    markNotificationRead,
   } = useNotifications();
+  const pendingReadIds = usePendingReadIds();
   const headingId = useId();
   const descriptionId = useId();
   const listId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
   const unreadFilterRef = useRef<HTMLInputElement>(null);
-  const pendingFocusNotificationId = useRef<string | null>(null);
-  const nextFocusTarget = useRef<HTMLElement | null>(null);
   const visibleNotifications = showUnreadOnly
     ? notifications.filter(
         (notification) =>
           !notification.read || pendingReadIds.has(notification.id),
       )
     : notifications;
-
-  useEffect(() => {
-    const notificationId = pendingFocusNotificationId.current;
-
-    if (!notificationId || pendingReadIds.has(notificationId)) {
-      return;
-    }
-
-    const notification = notifications.find(
-      (item) => item.id === notificationId,
-    );
-    const focusTarget = nextFocusTarget.current;
-
-    if (notification?.read && focusTarget) {
-      window.requestAnimationFrame(() => {
-        focusTarget.focus();
-      });
-    }
-
-    pendingFocusNotificationId.current = null;
-    nextFocusTarget.current = null;
-  }, [notifications, pendingReadIds]);
-
-  const handleMarkRead = (
-    notificationId: string,
-    currentTarget: HTMLButtonElement,
-  ) => {
-    pendingFocusNotificationId.current = notificationId;
-    nextFocusTarget.current =
-      getNextFocusableElement(panelRef.current, currentTarget) ??
-      unreadFilterRef.current;
-    markNotificationRead(notificationId);
-  };
 
   return (
     <Popover.Root>
@@ -171,8 +140,8 @@ export function NotificationCenter() {
               <NotificationItem
                 key={notification.id}
                 notification={notification}
-                isMarkingRead={pendingReadIds.has(notification.id)}
-                onMarkRead={handleMarkRead}
+                panelRef={panelRef}
+                unreadFilterRef={unreadFilterRef}
               />
             ))}
           </ul>
@@ -184,19 +153,31 @@ export function NotificationCenter() {
 
 type NotificationItemProps = {
   notification: PortalNotification;
-  isMarkingRead: boolean;
-  onMarkRead: (
-    notificationId: string,
-    currentTarget: HTMLButtonElement,
-  ) => void;
+  panelRef: RefObject<HTMLDivElement | null>;
+  unreadFilterRef: RefObject<HTMLInputElement | null>;
 };
 
 function NotificationItem({
   notification,
-  isMarkingRead,
-  onMarkRead,
+  panelRef,
+  unreadFilterRef,
 }: NotificationItemProps) {
-  const canMarkRead = !notification.read || isMarkingRead;
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const { mutate, isPending, isError } = useMarkNotificationRead();
+  const canMarkRead = !notification.read || isPending;
+
+  const handleMarkRead = () => {
+    const nextFocusTarget = buttonRef.current
+      ? (getNextFocusableElement(panelRef.current, buttonRef.current) ??
+        unreadFilterRef.current)
+      : unreadFilterRef.current;
+
+    mutate(notification.id, {
+      onSuccess: () => {
+        window.requestAnimationFrame(() => nextFocusTarget?.focus());
+      },
+    });
+  };
 
   return (
     <li
@@ -218,27 +199,34 @@ function NotificationItem({
         {canMarkRead && (
           <div className="mt-3">
             <Button
+              ref={buttonRef}
               size="sm"
-              disabled={isMarkingRead}
-              aria-busy={isMarkingRead}
+              disabled={isPending}
+              aria-busy={isPending}
               aria-label={
-                isMarkingRead
+                isPending
                   ? `Marking ${notification.title} as read`
                   : `Mark ${notification.title} as read`
               }
               className="disabled:cursor-wait"
-              onClick={(event) =>
-                onMarkRead(notification.id, event.currentTarget)
-              }
+              onClick={handleMarkRead}
             >
-              {isMarkingRead && (
+              {isPending && (
                 <LoaderCircle
                   aria-hidden="true"
                   className="text-icon-inverse size-4 animate-spin"
                 />
               )}
-              {isMarkingRead ? 'Marking read' : 'Mark read'}
+              {isPending ? 'Marking read' : 'Mark read'}
             </Button>
+            {isError && (
+              <p
+                role="alert"
+                className="text-text-feedback-error mt-2 text-sm"
+              >
+                Notification could not be marked as read.
+              </p>
+            )}
           </div>
         )}
       </div>

@@ -1,60 +1,32 @@
-import { useEffect, useState } from 'react';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   searchKnowledgeArticles,
   searchProducts,
   searchSupportTickets,
 } from '../lib/mockPortalApi';
-import type { SearchResult } from '../types';
 import { useDebouncedValue } from './useDebouncedValue';
 
 export function useGlobalSearch(query: string) {
   const debouncedQuery = useDebouncedValue(query.trim(), 180);
   const isEnabled = debouncedQuery.length >= 2;
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
 
-  useEffect(() => {
-    const controller = new AbortController();
+  const { data = [], isFetching } = useQuery({
+    queryKey: ['global-search', debouncedQuery],
+    queryFn: async ({ signal }) => {
+      const resultsBySource = await Promise.all([
+        searchProducts(debouncedQuery, signal),
+        searchKnowledgeArticles(debouncedQuery, signal),
+        searchSupportTickets(debouncedQuery, signal),
+      ]);
 
-    if (!isEnabled) {
-      return () => controller.abort();
-    }
-
-    async function search() {
-      await Promise.resolve();
-
-      if (controller.signal.aborted) {
-        return;
-      }
-
-      setIsSearching(true);
-
-      try {
-        const resultsBySource = await Promise.all([
-          searchProducts(debouncedQuery, controller.signal),
-          searchKnowledgeArticles(debouncedQuery, controller.signal),
-          searchSupportTickets(debouncedQuery, controller.signal),
-        ]);
-
-        setResults(resultsBySource.flat());
-      } catch (error) {
-        if (!(error instanceof DOMException && error.name === 'AbortError')) {
-          setResults([]);
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setIsSearching(false);
-        }
-      }
-    }
-
-    search();
-
-    return () => controller.abort();
-  }, [debouncedQuery, isEnabled]);
+      return resultsBySource.flat();
+    },
+    enabled: isEnabled,
+    placeholderData: keepPreviousData,
+  });
 
   return {
-    results: isEnabled ? results : [],
-    isSearching: isEnabled && isSearching,
+    results: isEnabled ? data : [],
+    isSearching: isEnabled && isFetching,
   };
 }

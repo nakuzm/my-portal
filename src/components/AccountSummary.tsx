@@ -8,13 +8,10 @@ import {
 import { CardError, CardSkeleton } from './CardState';
 import { DashboardCard } from './DashboardCard';
 import { cn } from '../lib/cn';
-import type { CustomerInfo } from '../types';
 import { getInitials } from '@utils/getInitials';
+import { useCustomer } from '@hooks/useCustomer';
 
 type AccountSummaryProps = {
-  customer: CustomerInfo | null;
-  error: Error | null;
-  isLoading: boolean;
   className?: string;
 };
 
@@ -26,12 +23,9 @@ const accountRows = [
   ['renewalDate', 'Renewal', CalendarDays],
 ] as const;
 
-export function AccountSummary({
-  customer,
-  error,
-  isLoading,
-  className,
-}: AccountSummaryProps) {
+export function AccountSummary({ className }: AccountSummaryProps) {
+  const { data: customer, error, isLoading } = useCustomer();
+
   return (
     <DashboardCard
       className={cn('content-start gap-5', className)}

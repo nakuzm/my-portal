@@ -36,8 +36,8 @@ The deployed project site is available at `https://nakuzm.github.io/my-portal/` 
 - `src/lib/mockPortalApi.ts` owns the typed mocked service layer and simulates independent API latency.
 - `src/lib/delay.ts` provides the reusable abort-aware latency helper for mocked API calls.
 - `src/hooks/useCustomer.ts`, `src/hooks/useTickets.ts`, and `src/hooks/useOrders.ts` wrap individual async resources.
-- `src/hooks/useDashboardData.ts` and `src/hooks/useGlobalSearch.ts` compose resource hooks and keep async orchestration out of UI components.
-- `src/hooks/useNotificationState.ts` owns notification polling, optimistic read updates, and local read-state merging. `NotificationsProvider` exposes that state, while `src/hooks/useNotifications.ts` is the consumer hook used by dashboard components.
+- `src/hooks/useTickets.ts`, `useOrders.ts`, and `useCustomer.ts` are called directly by the dashboard card that renders each resource, so a query's data only re-renders the card that needs it. `src/hooks/useGlobalSearch.ts` composes resource hooks and keeps async orchestration out of UI components.
+- `src/hooks/useNotifications.ts` owns notification polling and exposes per-item mutations (`useMarkNotificationRead`, `usePendingReadIds`) built on the shared React Query cache, so any component can read or mutate notifications directly without a context provider.
 - `src/components/NotificationCenter.tsx` uses Radix Popover for accessible overlay behavior.
 - `src/components/*` contains focused dashboard primitives and sections styled with Tailwind utilities.
 - `src/lib/cn.ts` combines `clsx` and `tailwind-merge` for predictable conditional class names.

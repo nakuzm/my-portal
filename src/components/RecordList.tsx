@@ -10,15 +10,12 @@ import {
   ticketStatusTones,
 } from '../constants/labels';
 import { useNotifications } from '@hooks/useNotifications';
-import type { Order, ServiceTicket } from '../types';
+import { useTickets } from '@hooks/useTickets';
+import { useOrders } from '@hooks/useOrders';
 
-type TicketListProps = {
-  tickets: ServiceTicket[] | null;
-  error: Error | null;
-  isLoading: boolean;
-};
+export function TicketList() {
+  const { data: tickets, error, isLoading } = useTickets();
 
-export function TicketList({ tickets, error, isLoading }: TicketListProps) {
   return (
     <DashboardCard aria-busy={isLoading}>
       <CardHeader title="Open service tickets" count={tickets?.length} />
@@ -49,13 +46,9 @@ export function TicketList({ tickets, error, isLoading }: TicketListProps) {
   );
 }
 
-type OrderListProps = {
-  orders: Order[] | null;
-  error: Error | null;
-  isLoading: boolean;
-};
+export function OrderList() {
+  const { data: orders, error, isLoading } = useOrders();
 
-export function OrderList({ orders, error, isLoading }: OrderListProps) {
   return (
     <DashboardCard aria-busy={isLoading}>
       <CardHeader title="Recent orders" count={orders?.length} />
