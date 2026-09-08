@@ -1,6 +1,6 @@
 # Portal Foundation Dashboard
 
-React, TypeScript, Vite, and Tailwind CSS prototype for a portal foundation dashboard. It demonstrates a composite account overview, concurrent global search across independent mock APIs, and a reactive notification center.
+React, TypeScript, Vite, Tailwind CSS, and TanStack Query prototype for a portal foundation dashboard. It demonstrates a composite account overview, concurrent global search across independent mock APIs, and a reactive notification center.
 
 ## Run Locally
 
@@ -33,10 +33,11 @@ The deployed project site is available at `https://nakuzm.github.io/my-portal/` 
 
 ## Component & Data Architecture
 
+- `src/main.tsx` wraps the app in a single `QueryClientProvider`, giving every hook below a shared cache keyed by query key instead of relying on React Context to fan data out.
 - `src/lib/mockPortalApi.ts` owns the typed mocked service layer and simulates independent API latency.
 - `src/lib/delay.ts` provides the reusable abort-aware latency helper for mocked API calls.
-- `src/hooks/useCustomer.ts`, `src/hooks/useTickets.ts`, and `src/hooks/useOrders.ts` wrap individual async resources.
-- `src/hooks/useTickets.ts`, `useOrders.ts`, and `useCustomer.ts` are called directly by the dashboard card that renders each resource, so a query's data only re-renders the card that needs it. `src/hooks/useGlobalSearch.ts` composes resource hooks and keeps async orchestration out of UI components.
+- `src/hooks/useCustomer.ts`, `src/hooks/useTickets.ts`, and `src/hooks/useOrders.ts` each wrap a `useQuery` for one async resource, and are called directly by the dashboard card that renders it, so a query's data only re-renders the card that needs it.
+- `src/hooks/useGlobalSearch.ts` debounces the input and runs its own `useQuery` that fans out to the products/knowledge-articles/support-tickets searches with `Promise.all`, using `placeholderData: keepPreviousData` to keep the last results on screen while a new search is in flight.
 - `src/hooks/useNotifications.ts` owns notification polling and exposes per-item mutations (`useMarkNotificationRead`, `usePendingReadIds`) built on the shared React Query cache, so any component can read or mutate notifications directly without a context provider.
 - `src/components/NotificationCenter.tsx` uses Radix Popover for accessible overlay behavior.
 - `src/components/*` contains focused dashboard primitives and sections styled with Tailwind utilities.
